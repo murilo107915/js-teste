@@ -1,0 +1,79 @@
+// Definição do tamanho do campo
+const campoAltura = 400;
+const campoLargura = 600;
+
+// Definição das dimensões da raquete
+const raqueteAltura = 80;
+const raqueteLargura = 10;
+
+// Definição das dimensões da bola
+const bolaDiametro = 20;
+
+// Inicialização da posição da raquete e da bola
+let raquetePosicaoY = campoAltura / 2 - raqueteAltura / 2;
+let bolaPosicaoX = campoLargura / 2 - bolaDiametro / 2;
+let bolaPosicaoY = campoAltura / 2 - bolaDiametro / 2;
+
+// Inicialização da velocidade da bola
+let velocidadeBolaX = 5;
+let velocidadeBolaY = 5;
+
+// Verificações de colisão
+function verificarColisao() {
+    // Colisão com a raquete
+    if (
+        bolaPosicaoX + bolaDiametro >= campoLargura - raqueteLargura &&
+        bolaPosicaoY >= raquetePosicaoY &&
+        bolaPosicaoY <= raquetePosicaoY + raqueteAltura
+    ) {
+        velocidadeBolaX = -velocidadeBolaX;
+    }
+
+    // Colisão com as paredes superior e inferior
+    if (bolaPosicaoY <= 0 || bolaPosicaoY + bolaDiametro >= campoAltura) {
+        velocidadeBolaY = -velocidadeBolaY;
+    }
+
+    // Colisão com as paredes laterais
+    if (bolaPosicaoX <= 0 || bolaPosicaoX + bolaDiametro >= campoLargura) {
+        velocidadeBolaX = -velocidadeBolaX;
+    }
+}
+
+// Atualização da posição da bola
+function atualizarBola() {
+    bolaPosicaoX += velocidadeBolaX;
+    bolaPosicaoY += velocidadeBolaY;
+}
+
+// Desenho do campo, raquete e bola
+function desenhar() {
+    // Desenha o campo
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Desenha a raquete
+    ctx.fillStyle = '#FFF';
+    ctx.fillRect(campoLargura - raqueteLargura, raquetePosicaoY, raqueteLargura, raqueteAltura);
+
+    // Desenha a bola
+    ctx.beginPath();
+    ctx.fillStyle = '#FFF';
+    ctx.arc(bolaPosicaoX, bolaPosicaoY, bolaDiametro / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+}
+
+// Função de loop do jogo
+function loopJogo() {
+    verificarColisao();
+    atualizarBola();
+    desenhar();
+    requestAnimationFrame(loopJogo);
+}
+
+// Inicialização do jogo
+const canvas = document.getElementById('jogo');
+
+
+loopJogo();
